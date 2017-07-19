@@ -1,0 +1,24 @@
+---
+  - name: Copy the root credentials as .my.cnf file
+    template: src=my.cnf.j2 dest=~/.my.cnf mode=0600
+
+  - name: create a role in MySQL
+    mysql_user:
+      name: "{{ username }}"
+      host: "{{ item }}"
+      password: "{{ db_password }}"
+      priv: "*.*:ALL,GRANT"
+      state: present
+    with_items:
+      - "{{ ansible_hostname }}"
+      - 127.0.0.1
+      - ::1
+      - localhost
+    become: yes
+
+  - name: create a database in MySQL
+    mysql_db:
+      name: "{{ database_name }}"
+      encoding: utf8
+      state: present
+    become: yes

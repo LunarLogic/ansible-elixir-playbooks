@@ -1,0 +1,22 @@
+---
+  - name: add an apt nodesource signing key
+    apt_key:
+      url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+      state: present
+
+  - name: add nodesource repository into sources list
+    apt_repository:
+      repo: "{{ item }}"
+      state: present
+    with_items:
+      - deb https://deb.nodesource.com/{{ version }} {{ distro }} main
+      - deb-src https://deb.nodesource.com/{{ version }} {{ distro }} main
+
+  - name: install packages
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+    with_items:
+      - nodejs

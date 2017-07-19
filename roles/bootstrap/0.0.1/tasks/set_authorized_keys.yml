@@ -1,0 +1,9 @@
+---
+  - name: set authorized keys
+    authorized_key:
+      user: "{{ item }}"
+      state: present
+      key: "{{ lookup('pipe', 'cat {{ authorized_key_paths | join(\" \") }}') }}"
+      exclusive: True
+    with_items:
+      - root

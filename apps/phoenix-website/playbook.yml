@@ -1,0 +1,46 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  pre_tasks:
+    - name: install python
+      raw: sudo apt-get -y install python-minimal
+
+    - action: setup
+
+  roles:
+    - role: bootstrap/0.0.1
+      authorized_key_paths:
+        - ../../public_keys/*.pub
+
+    - role: user/0.0.1
+      username: admin
+      sudoer: True
+      authorized_key_paths:
+        - ../../public_keys/*.pub
+
+    - role: install_nginx/0.0.1
+
+    - role: install_postgresql/0.0.1
+
+    - role: imagemagick/0.0.1
+
+    - role: user/0.0.1
+      username: phoenix
+      authorized_key_paths:
+        - ../../public_keys/*.pub
+        - ./circle_ci.pub
+
+    - role: configure-postgresql/0.0.1
+      username: phoenix
+      database_name: phoenix
+
+    - role: phoenix-app/0.0.1
+      username: phoenix
+      app_name: phoenix
+
+    - role: lets_encrypt/0.0.1
+      app_name: phoenix
+
+    # This must be the last one role to log info about successfully provisioned machine.
+    - role: provision_log/0.0.1

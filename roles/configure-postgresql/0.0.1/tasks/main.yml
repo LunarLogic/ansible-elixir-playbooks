@@ -1,0 +1,17 @@
+---
+  - name: create a role in PostgreSQL
+    postgresql_user:
+      name: "{{ username }}"
+      password: "{{ db_password }}"
+      role_attr_flags: SUPERUSER
+    become: yes
+    become_user: postgres
+
+  - name: create a database in PostgreSQL
+    postgresql_db:
+      name: "{{ database_name }}"
+      owner: "{{ username }}"
+      encoding: UTF8
+      template: template0
+    become: yes
+    become_user: postgres

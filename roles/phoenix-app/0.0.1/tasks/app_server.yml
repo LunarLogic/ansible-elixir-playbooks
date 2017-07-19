@@ -1,0 +1,19 @@
+---
+- name: create app server service in systemd
+  template:
+    src: app_name.service.j2
+    dest: /etc/systemd/system/{{ app_name }}.service
+    mode: 0644
+
+- name: enable app service in systemd
+  systemd:
+    name: "{{ app_name }}"
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
+
+- name: allow user to restart the application
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    line: "{{ username }} ALL=(ALL) NOPASSWD: /bin/systemctl restart {{ app_name }}"

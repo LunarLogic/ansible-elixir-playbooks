@@ -1,0 +1,75 @@
+---
+- name: "Create SSL directory"
+  file: dest=/etc/nginx/ssl state=directory
+
+- name: "Generate DH params"
+  command: openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048 creates=/etc/nginx/ssl/dhparams.pem
+  notify: reload nginx
+
+
+- name: "Install certbot"
+  command: "wget https://dl.eff.org/certbot-auto"
+  args:
+    creates: "/root/certbot-auto"
+    chdir: "/root/"
+
+- name: "Make certbot executable"
+  file:
+    path: /root/certbot-auto
+    mode: 0755
+
+- name: "Create let's encrypt directory"
+  file: dest=/etc/letsencrypt state=directory
+
+- name: "Create webroot directory"
+  file: dest=/var/www state=directory
+
+- name: "Configure let's encrypt"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/letsencrypt/{{ item }}"
+  with_items:
+    - cli.ini
+
+- name: "Configure nginx well-know snippet"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nginx/snippets/{{ app_name }}/{{ item }}"
+  with_items:
+    - well-known.conf
+  notify: reload nginx
+
+- meta: flush_handlers
+
+- name: "Attempt to obtain SSL certificate using the webroot authenticator"
+  command: >
+    /root/certbot-auto
+    --rsa-key-size 4096
+    --agree-tos {% for d in domains %}-d {{d}} {% endfor %}
+    --expand
+    --text
+    --non-interactive
+    -a webroot
+    --webroot-path /var/www/
+    auth
+  args:
+    creates: "/etc/letsencrypt/live/{{ domains[0] }}"
+
+- name: "Configure nginx snippets"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nginx/snippets/{{ app_name }}/{{ item }}"
+  with_items:
+    - ssl-params.conf
+  notify: reload nginx
+
+- name: Fix the renewal file
+  ini_file: section=renewalparams option=authenticator value=webroot dest="/etc/letsencrypt/renewal/{{ domains[0] }}.conf"
+
+- name: "Schedule certificates renewals"
+  cron:
+    name: "SSL certificates renewal"
+    minute: 0
+    hour: 0
+    state: present
+    job: /root/certbot-auto renew --quiet --no-self-upgrade --renew-hook "sudo service nginx restart"

@@ -1,0 +1,7 @@
+{% if lets_encrypt_environment == "production" %}
+server = https://acme-v01.api.letsencrypt.org/directory
+{% else %}
+server = https://acme-staging.api.letsencrypt.org/directory
+{% endif %}
+email = {{ lets_encrypt_contact_email }}
+webroot-path = /var/www

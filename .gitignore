@@ -1,0 +1,13 @@
+.DS_Store
+.vagrant
+ubuntu-xenial-16.04-cloudimg-console.log
+*.retry
+callback_plugins/human_log.pyc
+/.downloaded_roles
+
+# ignore private pass that you use to encrypt/decrypt credentials with Ansible
+vault_pass.txt
+
+# ignore private keys for CI server
+/apps/elixir-build-server/circle_ci
+/apps/phoenix-website/circle_ci

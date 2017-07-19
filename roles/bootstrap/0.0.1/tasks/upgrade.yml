@@ -1,0 +1,57 @@
+---
+  - name: Set Postfix option type as internet site
+    debconf:
+      name: postfix
+      question: postfix/main_mailer_type
+      value: Internet Site
+      vtype: string
+
+  - name: Set Postfix option hostname
+    debconf:
+      name: postifx
+      question: "postfix/mailname"
+      value: "{{ domain }}"
+      vtype: string
+
+  - name: "install aptitude"
+    apt:
+      name: aptitude
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: remove not needed packages
+    apt:
+      pkg: "{{ item }}"
+      state: absent
+      update_cache: yes
+      cache_valid_time: 3600
+    with_items:
+      - apache2
+      - apache2-doc
+      - apache2-mpm-prefork
+      - apache2-utils
+      - xinetd
+      - sasl2-bin
+      - samba
+      - bind9
+
+  - name: install missing packages
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+    with_items:
+      - apt-transport-https
+
+  - name: apt upgrade
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: apt update
+    apt:
+      upgrade: dist
+      update_cache: yes
+      cache_valid_time: 3600

@@ -1,0 +1,62 @@
+# Based on:
+# http://www.phoenixframework.org/docs/serving-your-application-behind-a-proxy
+
+upstream {{ app_name }} {
+  server 127.0.0.1:8888 max_fails=5 fail_timeout=60s;
+}
+
+server {
+  listen      80;
+  server_name {{ domains | join(" ") }};
+
+  # allows Let's Encrypt verification request on HTTP
+  location ~ /.well-known {
+    root /var/www;
+    allow all;
+  }
+
+  location / {
+    return 301 https://{{ domains[0] }}$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl;
+
+  server_name {{ domains[0] }};
+
+  client_max_body_size 999M;
+
+  gzip on;
+  gzip_types text/plain text/css text/xml application/x-javascript application/xml application/rss+xml
+    application/atom+xml text/javascript application/javascript application/json text/mathml image/svg+xml;
+
+  include "snippets/{{ app_name }}/*.conf";
+
+  location / {
+    allow all;
+
+    # Proxy Headers
+    proxy_http_version 1.1;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Cluster-Client-Ip $remote_addr;
+
+    # The Important Websocket Bits!
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+
+    proxy_pass http://{{ app_name }};
+  }
+}
+
+server {
+  listen 443 ssl;
+  server_name {{ domains | join(" ") }};
+
+  include "snippets/{{ app_name }}/*.conf";
+
+  location / {
+    return 301 https://{{ domains[0] }}$request_uri;
+  }
+}

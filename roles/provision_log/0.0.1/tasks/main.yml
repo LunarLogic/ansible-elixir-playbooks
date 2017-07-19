@@ -1,0 +1,7 @@
+- name: Log provisioning time and commit
+  lineinfile:
+    create: yes
+    state: present
+    mode: 0644
+    line: '{{ provision_date }} {{ provision_version }}'
+    dest: /var/log/provision.log

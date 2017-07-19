@@ -1,0 +1,3 @@
+---
+provision_date: "{{ lookup('pipe', 'date') }}"
+provision_version: "{{ lookup('pipe', 'git rev-parse HEAD') }}"

@@ -1,0 +1,19 @@
+---
+- name: "Create nginx snippets directory for the app"
+  file: dest="/etc/nginx/snippets/{{ app_name }}" state="directory"
+
+- name: configure app site
+  template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-available/{{ app_name }}
+    owner: root
+    group: root
+    backup: true
+  notify: reload nginx
+
+- name: activate app site configuration
+  file:
+    path: /etc/nginx/sites-enabled/{{ app_name }}
+    src: /etc/nginx/sites-available/{{ app_name }}
+    state: link
+  notify: reload nginx

@@ -1,0 +1,13 @@
+---
+  - name: install useful packages
+    action: apt pkg={{ item }} update_cache=yes cache_valid_time=3600
+    with_items:
+      - git
+      - mc
+      - vim
+      - tmux
+
+  - name: set default editor
+    alternatives:
+      name: editor
+      path: /usr/bin/vim.basic

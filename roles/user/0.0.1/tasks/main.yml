@@ -1,0 +1,19 @@
+---
+  - name: create user
+    user:
+      name: "{{ username }}"
+      state: present
+      shell: /bin/bash
+
+  - name: set authorized keys
+    authorized_key:
+      user: "{{ username }}"
+      state: present
+      key: "{{ lookup('pipe', 'cat {{ authorized_key_paths | join(\" \") }}') }}"
+      exclusive: True
+
+  - name: "{{ sudoer | ternary('allow','diallow') }} user to run all commands using sudo without a password"
+    lineinfile:
+      dest: /etc/sudoers
+      state: "{{ sudoer | ternary('present','absent') }}"
+      line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"

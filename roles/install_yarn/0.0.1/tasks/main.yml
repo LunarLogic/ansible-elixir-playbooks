@@ -1,0 +1,21 @@
+---
+  - name: add an apt yarnpkg signing key
+    apt_key:
+      url: https://dl.yarnpkg.com/debian/pubkey.gpg
+      state: present
+
+  - name: add yarn repository into sources list
+    apt_repository:
+      repo: "{{ item }}"
+      state: present
+    with_items:
+      - deb https://dl.yarnpkg.com/debian/ stable main
+
+  - name: install packages
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+    with_items:
+      - yarn

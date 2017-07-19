@@ -1,0 +1,20 @@
+---
+  - name: add an apt ubuntu/erlang_solutions signing key
+    apt_key:
+      url: https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+      state: present
+
+  - name: add erlang-solutions repository into sources list
+    apt_repository:
+      repo: deb https://packages.erlang-solutions.com/ubuntu xenial contrib
+      state: present
+
+  - name: install packages
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+    with_items:
+      - erlang
+      - elixir

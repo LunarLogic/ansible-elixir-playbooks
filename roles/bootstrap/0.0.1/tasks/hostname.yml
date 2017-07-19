@@ -1,0 +1,11 @@
+---
+  - name: set fully qualified domain name
+    lineinfile:
+      dest: /etc/hosts
+      state: present
+      regexp: "^127.0.1.1"
+      line: "127.0.1.1 {{ hostname }}.{{ domains[0] }} {{ hostname }}"
+
+  - name: set hostname
+    hostname:
+      name: "{{ hostname }}"

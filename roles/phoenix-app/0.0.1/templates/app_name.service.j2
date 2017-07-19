@@ -1,0 +1,22 @@
+[Unit]
+Description=Server for {{ app_name }}
+Wants=postgresql.service
+After=postgresql.service
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User={{ username }}
+Group={{ username }}
+WorkingDirectory=/home/{{ username }}/{{ app_name }}/
+ExecStart=/home/{{ username }}/{{ app_name }}/bin/{{ app_name }} foreground
+KillMode=process
+Restart=on-failure
+SuccessExitStatus=143
+TimeoutSec=10
+RestartSec=5
+SyslogIdentifier=ieep
+
+[Install]
+WantedBy=multi-user.target
