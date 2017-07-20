@@ -41,6 +41,8 @@
 
     - role: lets_encrypt/0.0.1
       app_name: phoenix
+      lets_encrypt_contact_email: admin@lunarlogic.io
+      lets_encrypt_environment: production
 
     # This must be the last one role to log info about successfully provisioned machine.
     - role: provision_log/0.0.1
