@@ -10,7 +10,7 @@
     debconf:
       name: postifx
       question: "postfix/mailname"
-      value: "{{ domain }}"
+      value: "{{ domains[0] }}"
       vtype: string
 
   - name: "install aptitude"

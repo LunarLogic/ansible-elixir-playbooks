@@ -10,8 +10,6 @@
 
   roles:
     - role: bootstrap/0.0.1
-      hostname: elixir-build-server
-      domain: lunarlogic.io
       authorized_key_paths:
         - ../../public_keys/*.pub
 
