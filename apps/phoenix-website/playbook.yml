@@ -37,10 +37,10 @@
 
     - role: phoenix-app/0.0.1
       username: phoenix
-      app_name: phoenix
+      app_name: phoenix_website
 
     - role: lets_encrypt/0.0.1
-      app_name: phoenix
+      app_name: phoenix_website
       lets_encrypt_contact_email: admin@lunarlogic.io
       lets_encrypt_environment: production
 
