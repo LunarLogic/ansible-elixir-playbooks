@@ -7,6 +7,8 @@ This project has ansible playbooks for:
 
 You can learn more about the project from this blog post (TODO: add here url).
 
+Here you will find an example [Phoenix Framework app configured for deployment](https://github.com/LunarLogic/phoenix_website).
+
 ## Requirements
 
 ### Control machine (your computer)
