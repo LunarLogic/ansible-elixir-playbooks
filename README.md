@@ -5,7 +5,8 @@ This project has ansible playbooks for:
 * Elixr Build Server - it has installed Erlang, Elixir and nodejs. Basically, all what is required to compile the Phoenix Framework application.
 * Phoenix Website - it is a playbook to provision server with installed PostgreSQL and configured nginx and Let's Encrypt for SSL. There is no Erlang/Elixir on this server because we will deploy there only compiled Phoenix application.
 
-You can learn more about the project from this blog post http://blog.lunarlogic.io/phoenix-app-deployment-with-ansible-playbooks-for-elixir
+__You can learn more about the project from this blog post__
+https://blog.lunarlogic.io/2017/phoenix-app-deployment-with-ansible-playbooks-for-elixir/
 
 Here you will find an example [Phoenix Framework app configured for deployment](https://github.com/LunarLogic/phoenix_website).
 
